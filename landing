@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мастерская Вайбкодинга — Создание ИИ-чатботов без программирования</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #141820;
+            --text-primary: #f5f7fa;
+            --text-secondary: #b8bfc7;
+            --accent-cyan: #7fffd4;
+            --accent-pink: #ff94d0;
+            --accent-yellow: #ffbe0b;
+            --border: #1f2937;
+            --glow: rgba(127, 255, 212, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Background animated grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(127, 255, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(127, 255, 212, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Glowing orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-cyan);
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-pink);
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.8);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 20px var(--glow);
+        }
+
+        .header-cta {
+            padding: 0.7rem 1.5rem;
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(127, 255, 212, 0.1);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            word-spacing: -0.2em;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #7fffd4, #ff94d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+            filter: brightness(1.2);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 30px var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px var(--glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-cyan);
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(127, 255, 212, 0.1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* What is Section */
+        .what-is {
+            padding: 4rem 0;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .what-is-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .what-is-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink));
+        }
+
+        .what-is h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-cyan);
+            word-spacing: -0.15em;
+        }
+
+        .what-is p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .what-is ul {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .what-is li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .what-is li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .highlight-box {
+            background: rgba(127, 255, 212, 0.05);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box strong {
+            color: var(--accent-cyan);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            text-align: center;
+            margin-bottom: 4rem;
+            font-weight: 700;
+            position: relative;
+            letter-spacing: -0.02em;
+            word-spacing: -0.15em;
+        }
+
+        .section-title::before {
+            content: '//';
+            color: var(--accent-cyan);
+            margin-right: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+            margin: 1rem auto 0;
+        }
+
+        /* Target Audience */
+        .target {
+            padding: 6rem 0;
+            background: rgba(20, 24, 32, 0.3);
+        }
+
+        .target-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .target-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .target-card.positive {
+            border-color: var(--accent-cyan);
+        }
+
+        .target-card.negative {
+            border-color: var(--accent-pink);
+        }
+
+        .target-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px rgba(127, 255, 212, 0.2);
+        }
+
+        .target-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            word-spacing: -0.1em;
+        }
+
+        .target-card h3::before {
+            content: '✓';
+            color: var(--accent-cyan);
+            margin-right: 0.5rem;
+        }
+
+        .target-card.negative h3::before {
+            content: '✗';
+            color: var(--accent-pink);
+        }
+
+        .target-card ul {
+            list-style: none;
+        }
+
+        .target-card li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .target-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        /* Program Section */
+        .program {
+            padding: 6rem 0;
+        }
+
+        .lesson-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-pink));
+            transform: scaleY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .lesson-card:hover {
+            transform: translateX(10px);
+            border-color: var(--accent-cyan);
+        }
+
+        .lesson-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .lesson-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            opacity: 0.3;
+        }
+
+        .lesson-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+            word-spacing: -0.1em;
+        }
+
+        .lesson-duration {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: rgba(127, 255, 212, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .lesson-content h4 {
+            color: var(--accent-cyan);
+            font-size: 1rem;
+            margin: 1.5rem 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .lesson-content ul {
+            list-style: none;
+        }
+
+        .lesson-content li {
+            padding: 0.3rem 0;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .lesson-content li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 0;
+            background: rgba(20, 24, 32, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .pricing-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: 'СКИДКА 50%';
+            position: absolute;
+            top: -35px;
+            right: -35px;
+            background: var(--accent-pink);
+            color: var(--bg-dark);
+            padding: 50px 50px 10px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+        }
+
+        .price-original {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-current {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-deadline {
+            color: var(--accent-pink);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .pricing-features {
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.7rem 0;
+            color: var(--text-secondary);
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .pricing-cta {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            margin-top: 2rem;
+        }
+
+        .pricing-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px var(--glow);
+        }
+
+        .pricing-note {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(127, 255, 212, 0.05);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Examples Section */
+        .examples {
+            padding: 6rem 0;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .example-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 40px rgba(127, 255, 212, 0.2);
+        }
+
+        .example-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+            word-spacing: -0.1em;
+        }
+
+        .example-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .example-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(127, 255, 212, 0.1);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+            color: var(--accent-cyan);
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 6rem 0;
+            background: rgba(20, 24, 32, 0.3);
+        }
+
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .faq-question::before {
+            content: 'Q: ';
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .faq-answer {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            padding-left: 2rem;
+        }
+
+        .faq-answer::before {
+            content: 'A: ';
+            color: var(--accent-pink);
+            font-weight: 700;
+            margin-left: -2rem;
+            margin-right: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .cta-box {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 0 60px rgba(127, 255, 212, 0.2);
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            word-spacing: -0.15em;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .cta-contact {
+            font-size: 1.3rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            margin: 2rem 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .quote {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            padding: 1.5rem;
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink));
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+
+            .what-is-content {
+                padding: 2rem;
+            }
+
+            .lesson-card {
+                padding: 1.5rem;
+            }
+
+            .pricing-card {
+                padding: 2rem;
+            }
+
+            .cta-box {
+                padding: 3rem 1.5rem;
+            }
+
+            .header-cta {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">// AI COACH LAB</div>
+                <a href="#pricing" class="header-cta">Записаться →</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-badge">5 занятий × 1.5 часа</div>
+                <h1 class="hero-title">Мастерская<br>Вайбкодинга</h1>
+                <p class="hero-subtitle">
+                    Создание ИИ-чатботов без программирования. Превратите свою экспертизу в цифрового ассистента за 5 недель.
+                </p>
+                <div class="hero-ctas">
+                    <a href="#pricing" class="btn btn-primary">Записаться со скидкой 50% →</a>
+                    <a href="#program" class="btn btn-secondary">Программа курса</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="what-is">
+            <div class="container">
+                <div class="what-is-content">
+                    <h2>Что такое вайбкодинг?</h2>
+                    <p>
+                        Это когда вы нанимаете ИИ-разработчика, который сидит рядом и делает всё что попросите:
+                    </p>
+                    <ul>
+                        <li>Придумывает идеи</li>
+                        <li>Предлагает дизайн</li>
+                        <li>Пишет код</li>
+                        <li>Проверяет ошибки</li>
+                        <li>Объясняет непонятное</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <p><strong>Для программистов:</strong> радикально ускоряет работу</p>
+                        <p><strong>Для не-программистов:</strong> превращает вас в создателя программных продуктов</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="target">
+            <div class="container">
+                <h2 class="section-title">Для кого эта мастерская?</h2>
+                <div class="target-grid">
+                    <div class="target-card positive">
+                        <h3>Вам подходит</h3>
+                        <ul>
+                            <li>Хотите создать своего ИИ-ассистента или чатбота</li>
+                            <li>Видите проблему, которую можно решить через чатбота</li>
+                            <li>Готовы осваивать новое и быть настойчивым</li>
+                            <li>Хотите монетизировать свои знания через технологии</li>
+                        </ul>
+                    </div>
+
+                    <div class="target-card positive">
+                        <h3>Особенно полезно для</h3>
+                        <ul>
+                            <li>Коучей и консультантов (упаковать экспертизу в чатбота)</li>
+                            <li>Предпринимателей (автоматизировать консультации)</li>
+                            <li>Специалистов (создать инструмент для своей ниши)</li>
+                            <li>HR и обучения (корпоративные ИИ-ассистенты)</li>
+                        </ul>
+                    </div>
+
+                    <div class="target-card negative">
+                        <h3>Вам НЕ подходит</h3>
+                        <ul>
+                            <li>Хотите просто послушать про ИИ (это практика, не теория)</li>
+                            <li>Не готовы вкладывать время в самостоятельную работу</li>
+                            <li>Ищете быстрые деньги без усилий</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="program" id="program">
+            <div class="container">
+                <h2 class="section-title">Программа: 5 занятий</h2>
+
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-title">Фундамент вайбкодинга</div>
+                        <div class="lesson-duration">⏱ 1.5 часа</div>
+                    </div>
+                    <div class="lesson-content">
+                        <h4>Что изучаем:</h4>
+                        <ul>
+                            <li>Что такое вайбкодинг и как он работает</li>
+                            <li>Знакомство с Antigravity и Claude</li>
+                            <li>4 качества успешного вайбкодера</li>
+                            <li>Создание рабочего пространства</li>
+                        </ul>
+                        <h4>Практика:</h4>
+                        <ul>
+                            <li>Регистрация в Antigravity</li>
+                            <li>Первый диалог с ИИ-разработчиком</li>
+                            <li>Создание структуры для проектов</li>
+                        </ul>
+                        <h4>Домашнее задание:</h4>
+                        <ul>
+                            <li>Придумать 3 идеи для чатбота</li>
+                            <li>Описать проблему, которую хотите решить</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-title">От идеи к концепции</div>
+                        <div class="lesson-duration">⏱ 1.5 часа</div>
+                    </div>
+                    <div class="lesson-content">
+                        <h4>Что изучаем:</h4>
+                        <ul>
+                            <li>Как найти идею для чатбота</li>
+                            <li>Jobs To Be Done (JTBD) — почему люди "нанимают" продукты</li>
+                            <li>Проверка рыночности с помощью Claude и Gemini</li>
+                            <li>Архитектура простого чатбота</li>
+                        </ul>
+                        <h4>Практика:</h4>
+                        <ul>
+                            <li>Обсуждаем ваши 3 идеи с Claude</li>
+                            <li>Проверяем рыночность через JTBD</li>
+                            <li>Выбираем 1 идею для реализации</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-title">Мета-промптинг и создание личности</div>
+                        <div class="lesson-duration">⏱ 1.5 часа</div>
+                    </div>
+                    <div class="lesson-content">
+                        <h4>Что изучаем:</h4>
+                        <ul>
+                            <li>Что такое мета-промптинг</li>
+                            <li>Как создать "личность" чатбота</li>
+                            <li>Структура системного промпта</li>
+                            <li>Техники улучшения ответов ИИ</li>
+                        </ul>
+                        <h4>Практика:</h4>
+                        <ul>
+                            <li>Создаём системный промпт для учебного проекта</li>
+                            <li>Тестируем разные варианты личности</li>
+                            <li>Начинаем делать ваш личный проект</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">04</div>
+                        <div class="lesson-title">Разработка и деплой</div>
+                        <div class="lesson-duration">⏱ 1.5 часа</div>
+                    </div>
+                    <div class="lesson-content">
+                        <h4>Что изучаем:</h4>
+                        <ul>
+                            <li>Как работать с ИИ при написании кода</li>
+                            <li>Проектирование с помощью Claude</li>
+                            <li>Telegram Bot API — основы</li>
+                            <li>Деплой бота (где он будет "жить")</li>
+                        </ul>
+                        <h4>Практика:</h4>
+                        <ul>
+                            <li>Создаём Telegram-бота для учебного проекта</li>
+                            <li>Начинаем создавать вашего бота</li>
+                            <li>Учимся деплоить через простые сервисы</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-header">
+                        <div class="lesson-number">05</div>
+                        <div class="lesson-title">Монетизация и запуск</div>
+                        <div class="lesson-duration">⏱ 1.5 часа</div>
+                    </div>
+                    <div class="lesson-content">
+                        <h4>Что изучаем:</h4>
+                        <ul>
+                            <li>Модели монетизации чатботов</li>
+                            <li>Маркетинговые исследования с ИИ</li>
+                            <li>Как запустить и протестировать гипотезу быстро</li>
+                            <li>Метрики успеха и масштабирование</li>
+                        </ul>
+                        <h4>Практика:</h4>
+                        <ul>
+                            <li>Добавляем монетизацию в ваш проект</li>
+                            <li>Создаём landing page (да, тоже с ИИ!)</li>
+                            <li>План запуска на первых 100 пользователей</li>
+                            <li>Презентация проектов участников</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="examples">
+            <div class="container">
+                <h2 class="section-title">Реальные примеры</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem;">
+                    Что я создал за 8 часов работы каждый:
+                </p>
+                <div class="examples-grid">
+                    <div class="example-card">
+                        <div class="example-name">"Сократис"</div>
+                        <div class="example-description">
+                            Философ в Telegram. Сократический метод диалога, помогает найти смыслы. Работает на Claude 4.5 Haiku.
+                        </div>
+                        <span class="example-tag">Philosophy</span>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-name">"Совет директоров"</div>
+                        <div class="example-description">
+                            10 экспертов в одном боте: Naval, Gary Vee, Pieter Levels и другие. Разные перспективы на один вопрос. 2 цента за консультацию.
+                        </div>
+                        <span class="example-tag">Business</span>
+                    </div>
+
+                    <div class="example-card">
+                        <div class="example-name">ИИ консультант по управлению</div>
+                        <div class="example-description">
+                            Для руководителей: мотивация, делегирование, обратная связь. Корпоративный проект. Полтора дня разработки.
+                        </div>
+                        <span class="example-tag">HR</span>
+                    </div>
+                </div>
+                <p style="text-align: center; color: var(--accent-cyan); margin-top: 3rem; font-weight: 600;">
+                    Все это может сделать каждый участник мастерской!
+                </p>
+            </div>
+        </section>
+
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <h2 class="section-title">Инвестиция</h2>
+                <div class="pricing-container">
+                    <div class="pricing-card">
+                        <div class="price-original">€497</div>
+                        <div class="price-current">€249</div>
+                        <div class="price-deadline">⚡ При регистрации до 10 декабря 2025</div>
+                        
+                        <ul class="pricing-features">
+                            <li>5 занятий × 1.5 часа (7.5 часов обучения)</li>
+                            <li>Записи всех занятий</li>
+                            <li>Telegram-группа поддержки</li>
+                            <li>Готовые шаблоны и промпты</li>
+                            <li>Доступ к инструментам (Antigravity и др.)</li>
+                            <li>Мои ответы на вопросы между занятиями</li>
+                            <li>Разбор вашего проекта</li>
+                        </ul>
+
+                        <a href="https://t.me/alexander_stashenko" class="pricing-cta">Записаться на мастерскую →</a>
+
+                        <div class="pricing-note">
+                            <strong>Экономия:</strong> Найм программиста для создания чатбота = €2000-5000<br>
+                            Вы сделаете сами + получите навык на всю жизнь = €249
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq">
+            <div class="container">
+                <h2 class="section-title">Частые вопросы</h2>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question">Я совсем не умею программировать. Справлюсь?</div>
+                        <div class="faq-answer">Да! Вайбкодинг именно для таких. ИИ пишет код, вы даёте задачи.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Сколько времени нужно между занятиями?</div>
+                        <div class="faq-answer">3-4 часа в неделю на практику. Если больше — быстрее продвинетесь.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Что если я застряну с кодом?</div>
+                        <div class="faq-answer">Telegram-группа + я помогу. Никто не останется без поддержки.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Можно ли создать несколько чатботов?</div>
+                        <div class="faq-answer">Да! После мастерской создавайте сколько хотите.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Это только про Telegram-ботов?</div>
+                        <div class="faq-answer">Основной фокус — Telegram, но принципы применимы везде.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">А если у меня нет идеи?</div>
+                        <div class="faq-answer">Найдём вместе на 1-2 занятии. У вас есть экспертиза — превратим в чатбота.</div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">Нужны ли какие-то покупки инструментов?</div>
+                        <div class="faq-answer">Antigravity — бесплатно (много токенов). Хостинг бота — от €5/мес (опционально).</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-box">
+                    <h2 class="cta-title">Готовы начать?</h2>
+                    <p class="cta-subtitle">
+                        Предварительный звонок обязателен (20-30 минут, бесплатно)<br>
+                        Убедимся что сработаемся и мастерская вам подходит
+                    </p>
+                    <a href="https://t.me/alexander_stashenko" class="btn btn-primary">Написать в Telegram →</a>
+                    <div class="cta-contact">@alexander_stashenko</div>
+                    <p style="color: var(--accent-pink); font-weight: 600; margin-top: 2rem;">
+                        Скидка 50% действует до 10 декабря 2025
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="quote">
+                "Мы дожили до времени, когда ИИ реально становится очень хорошим исполнителем. 
+                Процесс на самом деле очень простой — понять чего хочешь, поставить задачу и довести до качественного результата."
+                <br><br>— Александр Сташенко
+            </div>
+            <p>P.S. Горшки не боги обжигали, и с чатботами тоже разберёмся. Главное — начать. Увидимся на мастерской!</p>
+            <p style="margin-top: 2rem;">© 2025 Мастерская Вайбкодинга</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll indicator
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollIndicator').style.width = scrolled + '%';
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
