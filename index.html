@@ -1066,7 +1066,7 @@
                             <li>Разбор вашего проекта</li>
                         </ul>
 
-                        <a href="https://t.me/alexander_stashenko" target="_blank" rel="noopener noreferrer" class="pricing-cta">Записаться на мастерскую →</a>
+                        <a href="tg://resolve?domain=alexander_stashenko" class="pricing-cta">Записаться на мастерскую →</a>
 
                         <div class="pricing-note">
                             <strong>Экономия:</strong> Найм программиста для создания чатбота = €2000-5000<br>
@@ -1127,7 +1127,7 @@
                         Предварительный звонок обязателен (20-30 минут, бесплатно)<br>
                         Убедимся что сработаемся и мастерская вам подходит
                     </p>
-                    <a href="https://t.me/alexander_stashenko" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Написать в Telegram →</a>
+                    <a href="tg://resolve?domain=alexander_stashenko" class="btn btn-primary">Написать в Telegram →</a>
                     <div class="cta-contact">@alexander_stashenko</div>
                     <p style="color: var(--accent-pink); font-weight: 600; margin-top: 2rem;">
                         Скидка 50% действует до 10 декабря 2025
@@ -1150,6 +1150,24 @@
     </footer>
 
     <script>
+        // Detect if opened in Telegram
+        const isTelegram = navigator.userAgent.includes('Telegram');
+        
+        // Update all telegram links based on browser
+        document.addEventListener('DOMContentLoaded', function() {
+            const telegramLinks = document.querySelectorAll('a[href^="tg://"]');
+            
+            telegramLinks.forEach(link => {
+                if (!isTelegram) {
+                    // If not in Telegram, use regular https link
+                    const username = link.href.split('domain=')[1];
+                    link.href = `https://t.me/${username}`;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                }
+            });
+        });
+
         // Scroll indicator
         window.addEventListener('scroll', () => {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
