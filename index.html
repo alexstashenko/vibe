@@ -596,6 +596,136 @@
             padding: 6rem 0;
         }
 
+        /* Author Section */
+        .author {
+            padding: 6rem 0;
+            background: rgba(248, 249, 250, 0.5);
+        }
+
+        .author-card {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .author-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(8, 145, 178, 0.1);
+        }
+
+        .author-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .author-photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(8, 145, 178, 0.25);
+        }
+
+        .author-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .author-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .author-name {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .author-roles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .author-role {
+            padding: 0.3rem 0.8rem;
+            background: rgba(8, 145, 178, 0.1);
+            border: 1px solid var(--accent-cyan-muted);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        .author-bio {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .author-contact {
+            margin-top: 1rem;
+        }
+
+        .author-link {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .author-link:hover {
+            color: var(--accent-cyan-muted);
+            transform: translateX(3px);
+        }
+
+        .author-link::before {
+            content: '→';
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .author-link:hover::before {
+            transform: translateX(3px);
+        }
+
+        @media (max-width: 768px) {
+            .author-card {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem;
+                text-align: center;
+            }
+
+            .author-photo {
+                width: 150px;
+                height: 150px;
+                margin: 0 auto;
+            }
+
+            .author-roles {
+                justify-content: center;
+            }
+        }
+
         .examples-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -1007,6 +1137,34 @@
             </div>
         </section>
 
+        <section class="author">
+            <div class="container">
+                <h2 class="section-title">автор мастерской</h2>
+                <div class="author-card">
+                    <div class="author-photo">
+                        <img src="author-photo.png" alt="Александр Сташенко">
+                    </div>
+                    <div class="author-content">
+                        <h3 class="author-name">Александр Сташенко</h3>
+                        <div class="author-roles">
+                            <span class="author-role">аджайл коуч</span>
+                            <span class="author-role">психолог</span>
+                            <span class="author-role">основатель AI Coach Lab</span>
+                        </div>
+                        <p class="author-bio">
+                            Помогаю профессионалам и командам работать эффективнее с помощью современных AI-инструментов. 
+                            Создал собственную экосистему из 10+ ИИ-ассистентов, которые экономят мне более 20 часов в неделю.
+                        </p>
+                        <div class="author-contact">
+                            <a href="tg://resolve?domain=alexander_stashenko" class="author-link">
+                                telegram: @alexander_stashenko
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="examples">
             <div class="container">
                 <h2 class="section-title">реальные примеры</h2>
@@ -1180,7 +1338,7 @@
             }, observerOptions);
 
             // Observe all cards
-            const animatedElements = document.querySelectorAll('.lesson-card, .target-card, .example-card, .faq-item, .pricing-card');
+            const animatedElements = document.querySelectorAll('.lesson-card, .target-card, .example-card, .faq-item, .pricing-card, .author-card');
             animatedElements.forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(30px)';
