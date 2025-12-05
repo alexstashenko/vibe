@@ -10,14 +10,14 @@
     <style>
         :root {
             --bg-dark: #ffffff;
-            --bg-card: #f8f9fa;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent-cyan: #06b6d4;
-            --accent-cyan-muted: #22d3ee;
+            --bg-card: #f9fafb;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent-cyan: #0891b2;
+            --accent-cyan-muted: #06b6d4;
             --accent-pink: #c41e3a;
-            --border: #e5e5e5;
-            --glow: rgba(6, 182, 212, 0.15);
+            --border: #cbd5e1;
+            --glow: rgba(8, 145, 178, 0.2);
         }
 
         * {
@@ -43,8 +43,8 @@
             width: 100%;
             height: 100%;
             background-image: 
-                linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+                linear-gradient(rgba(8, 145, 178, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(8, 145, 178, 0.05) 1px, transparent 1px);
             background-size: 60px 60px;
             z-index: -1;
             opacity: 0.5;
@@ -57,7 +57,7 @@
             filter: blur(120px);
             opacity: 0.15;
             z-index: -1;
-            animation: float 25s ease-in-out infinite;
+            transition: transform 0.3s ease-out;
         }
 
         .orb-1 {
@@ -74,13 +74,24 @@
             background: var(--accent-pink);
             bottom: -100px;
             left: -100px;
-            animation-delay: -10s;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
+        /* Floating animation for cards */
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Gradient animation */
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Pulse animation for buttons */
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(8, 145, 178, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(8, 145, 178, 0); }
         }
 
         .container {
@@ -138,7 +149,7 @@
         .hero-badge {
             display: inline-block;
             padding: 0.4rem 1.2rem;
-            background: rgba(6, 182, 212, 0.1);
+            background: rgba(8, 145, 178, 0.1);
             border: 1px solid var(--accent-cyan-muted);
             border-radius: 50px;
             font-size: 0.8rem;
@@ -189,11 +200,18 @@
         .btn-primary {
             background: var(--accent-cyan);
             color: #ffffff;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary:hover {
             background: var(--accent-cyan-muted);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(8, 145, 178, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -203,7 +221,7 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(6, 182, 212, 0.1);
+            background: rgba(8, 145, 178, 0.1);
         }
 
         @keyframes fadeInUp {
@@ -268,7 +286,7 @@
         }
 
         .highlight-box {
-            background: rgba(6, 182, 212, 0.08);
+            background: rgba(8, 145, 178, 0.08);
             border-left: 2px solid var(--accent-cyan);
             padding: 1rem 1.5rem;
             margin: 2rem 0;
@@ -317,7 +335,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .target-card.positive {
@@ -329,8 +347,9 @@
         }
 
         .target-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--accent-cyan);
+            box-shadow: 0 15px 40px rgba(8, 145, 178, 0.15);
         }
 
         .target-card h3 {
@@ -384,13 +403,14 @@
             border-radius: 8px;
             padding: 2.5rem;
             margin-bottom: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
         .lesson-card:hover {
-            transform: translateX(5px);
+            transform: translateX(5px) translateY(-5px);
             border-color: var(--accent-cyan);
+            box-shadow: 0 10px 30px rgba(8, 145, 178, 0.15);
         }
 
         .lesson-header {
@@ -420,7 +440,7 @@
         .lesson-duration {
             color: var(--text-secondary);
             font-size: 0.85rem;
-            background: rgba(6, 182, 212, 0.1);
+            background: rgba(8, 145, 178, 0.1);
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
         }
@@ -464,12 +484,18 @@
 
         .pricing-card {
             background: var(--bg-card);
-            border: 2px solid var(--accent-cyan-muted);
+            border: 2px solid var(--accent-cyan);
             border-radius: 12px;
             padding: 3rem;
             text-align: center;
             position: relative;
             overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(8, 145, 178, 0.2);
         }
 
         .pricing-card::before {
@@ -538,21 +564,28 @@
             text-decoration: none;
             font-weight: 700;
             border-radius: 6px;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: 'JetBrains Mono', monospace;
             font-size: 1rem;
             margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .pricing-cta:hover {
             background: var(--accent-cyan-muted);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(8, 145, 178, 0.3);
+        }
+
+        .pricing-cta:active {
+            transform: translateY(-1px);
         }
 
         .pricing-note {
             margin-top: 2rem;
             padding: 1.5rem;
-            background: rgba(6, 182, 212, 0.08);
+            background: rgba(8, 145, 178, 0.08);
             border-radius: 6px;
             color: var(--text-secondary);
             font-size: 0.85rem;
@@ -574,12 +607,13 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 2rem;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .example-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02);
             border-color: var(--accent-cyan);
+            box-shadow: 0 15px 40px rgba(8, 145, 178, 0.15);
         }
 
         .example-name {
@@ -599,7 +633,7 @@
         .example-tag {
             display: inline-block;
             padding: 0.25rem 0.7rem;
-            background: rgba(6, 182, 212, 0.1);
+            background: rgba(8, 145, 178, 0.1);
             border: 1px solid var(--accent-cyan-muted);
             border-radius: 20px;
             font-size: 0.7rem;
@@ -624,11 +658,13 @@
             border-radius: 8px;
             padding: 2rem;
             margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .faq-item:hover {
             border-color: var(--accent-cyan);
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(8, 145, 178, 0.1);
         }
 
         .faq-question {
@@ -1127,6 +1163,30 @@
                     link.rel = 'noopener noreferrer';
                 }
             });
+
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all cards
+            const animatedElements = document.querySelectorAll('.lesson-card, .target-card, .example-card, .faq-item, .pricing-card');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+                observer.observe(el);
+            });
         });
 
         // Scroll indicator
@@ -1135,6 +1195,15 @@
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
             document.getElementById('scrollIndicator').style.width = scrolled + '%';
+
+            // Parallax effect for background
+            const scrollY = window.scrollY;
+            const orb1 = document.querySelector('.orb-1');
+            const orb2 = document.querySelector('.orb-2');
+            if (orb1 && orb2) {
+                orb1.style.transform = `translate(${scrollY * 0.05}px, ${scrollY * 0.03}px)`;
+                orb2.style.transform = `translate(${-scrollY * 0.03}px, ${-scrollY * 0.05}px)`;
+            }
         });
 
         // Smooth scroll
